@@ -1,9 +1,15 @@
 public class Food {
+	
+
 	private String name;
 	private double price;
 	private double total;
 	
 	
+	
+
+	
+
 	private static final double TAX = 0.075;
 
 	/**
@@ -33,5 +39,14 @@ public class Food {
 	
 	public String toString() {
 	    return String.format("%s - %.2f", this.name, this.price);
+	}
+	
+	public static double getTax() {
+		return TAX;
+	}
+	
+	
+	public double getTotal() {
+		return total;
 	}
 }
