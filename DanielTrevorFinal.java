@@ -2,17 +2,20 @@ import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
 
-public class Screen02Applet extends JApplet
+public class DanielTrevorFinal extends JApplet
 {
     //Array holding our food items
     private Food[] entreeMenu, mainMenu, dessertMenu, drinksMenu;
     private Food[] currentMenu; //Changes based on current menu
     private double subTotal = 0.0f;
+    private double totalWithTax = 0.0f;
     
     //The main screens for our application
     private JPanel screen01, screen02, screen03;
     
     /* SCREEN 01 VARIABLES */
+    private JLabel restaurantLogo;
+    private JButton beginOrderButton;
     /* END SCREEN 01 VARIABLES */
     
     /* SCREEN 02 VARIABLES */ 
@@ -35,9 +38,15 @@ public class Screen02Applet extends JApplet
     /* END SCREEN 02 VARIABLES */
     
     /* SCREEN 03 VARIABLES */
+    private JTextArea specialNotesField;
+    private JCheckBox deliveryCheckBox;
+    private ButtonGroup storeLocationGroup;
+    private JRadioButton storeOneButton, storeTwoButton;
+    private JButton editOrderButton, calculateTotalButton;
+    private JLabel totalDisplayLabel;
     /* END SCREEN 03 VARIABLES */
     
-    public Screen02Applet()
+    public DanielTrevorFinal()
     {
         //Create our food item lists
         this.initializeFoodItems();
@@ -47,13 +56,31 @@ public class Screen02Applet extends JApplet
         this.constructScreen02(); //The ordering screen
         this.constructScreen03(); //The review and checkout screen
         
-        this.add(screen02);
+        this.add(screen01);
     }
     
     //Switch the active screen
-    public void SwitchScreens()
+    public void SwitchScreens(String screenName, String activeScreen)
     {
+        //Remove previous screen from parent JApplet
+        if (activeScreen == "Screen01")
+            this.remove(screen01);
+        else if (activeScreen == "Screen02")
+            this.remove(screen02);
+        else if (activeScreen == "Screen03")
+            this.remove(screen03);
         
+        //Add new screen to parent JApplet
+        if (screenName == "Screen01")
+            this.add(screen01);
+        else if (screenName == "Screen02")
+            this.add(screen02);
+        else if (screenName == "Screen03")
+            this.add(screen03);
+        
+        //Call validate and repaint to fix screens not transitioning properly
+        this.validate();
+        this.repaint();
     }
     
     //Create our food items and add them to the list
@@ -64,7 +91,7 @@ public class Screen02Applet extends JApplet
         entreeMenu[0] = new Food("Entree #1",  1.99);
         entreeMenu[1] = new Food("Entree #2",  7.99);
         entreeMenu[2] = new Food("Entree #3", 12.99);
-        entreeMenu[3] = new Food("Entree #4",  8.99);
+        entreeMenu[3] = new Food("Entree #4",  10.00);
         
         //Initialize Main Menu
         mainMenu = new Food[7];
@@ -106,7 +133,24 @@ public class Screen02Applet extends JApplet
     //Create the UI elements here to prevent cluttering the main constructor
     private void constructScreen01()
     {
-        screen01 = new JPanel();
+        screen01 = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 20));
+        
+        //Restaurant Name
+        String name = "Daniel Ashcraft and Trevor Fisher's Mexican Restaurant";
+        restaurantLogo = new JLabel(name);
+        
+        beginOrderButton = new JButton("Begin Order");
+        beginOrderButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e)
+            {
+                //Switch to Screen01 from Screen02
+                SwitchScreens("Screen02", "Screen01");
+            }
+        });
+        
+        screen01.add(restaurantLogo);
+        screen01.add(beginOrderButton);
     }
     private void constructScreen02()
     {
@@ -133,12 +177,15 @@ public class Screen02Applet extends JApplet
         
         menuSelector = new JComboBox(menuSelectorOptions);
         menuSelector.addActionListener(new ActionListener() {
+            @Override 
             public void actionPerformed(ActionEvent e)
             {
+                //Switch the current menu
                 switchMenu((String)menuSelector.getSelectedItem());
             }
         });
-        subtotalContainer = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 5));
+        subtotalContainer = new JPanel(
+                new FlowLayout(FlowLayout.CENTER, 10, 5));
         
         JLabel subtotalLabel = new JLabel("Subtotal: $0.00");
         subtotalContainer.add(subtotalLabel);
@@ -148,23 +195,33 @@ public class Screen02Applet extends JApplet
         middleSectionContainer.add(menuSelector);
         /* Middle Section */
         
-        
         addToOrderButton = new JButton("Add to Order");
         addToOrderButton.addActionListener(new ActionListener() {
+            @Override 
             public void actionPerformed(ActionEvent e)
             {
+                //Add selected item to the order
                 int selectedIndex = foodMenuList.getSelectedIndex();
                 addToOrder(selectedIndex, subtotalLabel);
             }
         });
         
         checkoutButton = new JButton("Checkout");
-        //Add ActionListener to Switch Scenes
+        checkoutButton.addActionListener(new ActionListener() {
+            @Override 
+            public void actionPerformed(ActionEvent e)
+            {
+                //Switch to Screen02 from Screen03
+                SwitchScreens("Screen03", "Screen02");
+            }
+        });
         
         removeFromOrderButton = new JButton("Remove from Order");
         removeFromOrderButton.addActionListener(new ActionListener() {
+            @Override 
             public void actionPerformed(ActionEvent e)
             {
+                //Remove selected item from the order
                 int selectedIndex = orderList.getSelectedIndex();
                 removeFromOrder(selectedIndex, subtotalLabel);
             }
@@ -180,9 +237,76 @@ public class Screen02Applet extends JApplet
     }
     private void constructScreen03()
     {
-        screen03 = new JPanel();
+        screen03 = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 20));
+        
+        //Button group to choose store locations
+        storeLocationGroup = new ButtonGroup();
+        storeOneButton = new JRadioButton("North Broadway Store Location");
+        storeTwoButton = new JRadioButton("East Main Store Location");
+        
+        //Add radio buttons to button group
+        storeLocationGroup.add(storeOneButton);
+        storeLocationGroup.add(storeTwoButton);
+        
+        //delivery checkbox
+        deliveryCheckBox = new JCheckBox("Delivery?");
+        
+        //Text field for special notes to the restaurant
+        specialNotesField = new JTextArea("Enter special instructions here.");
+        
+        //Button for going back and editing the order
+        editOrderButton = new JButton("Edit Order");
+        editOrderButton.addActionListener(new ActionListener() {
+            @Override 
+            public void actionPerformed(ActionEvent e)
+            {
+                //Switch to Screen02 from Screen03
+                SwitchScreens("Screen02", "Screen03");
+            }
+        });
+        
+        //Button to calculate the total with tax and delivery charge
+        calculateTotalButton = new JButton("Calculate Total");
+        calculateTotalButton.addActionListener(new ActionListener() {
+            @Override 
+            public void actionPerformed(ActionEvent e)
+            {
+                calculateTotal();
+            }
+        });
+        
+        //Label to display the total
+        totalDisplayLabel = new JLabel("Total: Not Yet Calculated");
+        
+        //Add UI Elements to the screen
+        screen03.add(storeOneButton);
+        screen03.add(storeTwoButton);
+        screen03.add(deliveryCheckBox);
+        screen03.add(specialNotesField);
+        screen03.add(editOrderButton);
+        screen03.add(calculateTotalButton);
+        screen03.add(totalDisplayLabel);
     }
     
+    private void calculateTotal()
+    {
+        //Reset to 0.0
+        totalWithTax = 0.0f;
+        
+        //Loop through order adding up each item
+        for (int i = 0; i < orderListModel.size(); i++)
+            totalWithTax += ((Food)orderListModel.getElementAt(i)).getPrice();
+        
+        //Add delivery charge if checkbox is checked
+        if (deliveryCheckBox.isSelected())
+            totalWithTax += 4.0;
+        
+        //Add 7.5% tax
+        totalWithTax += totalWithTax * 0.075;
+        
+        //Update JLabel with corrent info
+        totalDisplayLabel.setText(String.format("Total: $%.2f", totalWithTax));
+    }
     
     //Screen 02 Events
     private void addToOrder(int index, JLabel subtotalLabel)
