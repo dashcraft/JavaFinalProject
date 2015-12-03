@@ -27,7 +27,6 @@ public class DanielTrevorFinal extends JApplet
     
     //Middle Section variables
     private JPanel middleSectionContainer; //Container for everything
-    private JPanel logoPlaceholder; //Section placeholder
     private JPanel subtotalContainer; //Subtotal wrapper.  Placeholder
     private JComboBox menuSelector; //Combo Box for switching between menus
     private String[] menuSelectorOptions = 
@@ -172,9 +171,6 @@ public class DanielTrevorFinal extends JApplet
         /* Middle Section */
         middleSectionContainer = new JPanel(new GridLayout(3, 1, 0, 2));
         
-        logoPlaceholder = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 5));
-        logoPlaceholder.add(new JLabel("Add Logo Here?"));
-        
         menuSelector = new JComboBox(menuSelectorOptions);
         menuSelector.addActionListener(new ActionListener() {
             @Override 
@@ -190,7 +186,6 @@ public class DanielTrevorFinal extends JApplet
         JLabel subtotalLabel = new JLabel("Subtotal: $0.00");
         subtotalContainer.add(subtotalLabel);
         
-        middleSectionContainer.add(logoPlaceholder);
         middleSectionContainer.add(subtotalContainer);
         middleSectionContainer.add(menuSelector);
         /* Middle Section */
