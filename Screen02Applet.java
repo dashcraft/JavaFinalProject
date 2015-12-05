@@ -3,12 +3,14 @@ import java.awt.event.*;
 import javax.swing.*;
 import javax.swing.border.BevelBorder;
 import javax.swing.border.EmptyBorder;
+import javax.swing.border.TitledBorder;
+import javax.swing.border.CompoundBorder;
 
 public class Screen02Applet extends JApplet {
 	// Array holding our food items
 	private Food[] entreeMenu, mainMenu, dessertMenu, drinksMenu;
 	private Food[] currentMenu; // Changes based on current menu
-	private double subTotal = 0.0f, finalSubTotal = 0.0f;
+	public double subTotal = 0.0f, finalSubTotal = 0.0f;
 
 	// The main screens for our application
 	private JPanel screen01, screen02, screen03, screen04;
@@ -47,6 +49,14 @@ public class Screen02Applet extends JApplet {
 	private JLabel subtotalCheckoutMenu;
 	private JLabel finalOrderTotalLabel, finalSubTotalLabel;
 	private JLabel lblThankYouFor;
+	private JPanel panel_2;
+	private JPanel specialInstructions;
+	private Label label_2;
+	private JPanel panel_1;
+	private JButton btnNewButton;
+	private JButton btnNewButton_1;
+	private Label label_1;
+	private JCheckBox checkBox;
 
 	/* END SCREEN 02 VARIABLES */
 
@@ -54,22 +64,28 @@ public class Screen02Applet extends JApplet {
 	/* END SCREEN 03 VARIABLES */
 
 	public Screen02Applet() {
+		setMinimumSize(new Dimension(500, 600));
 		// Create our food item lists
 		this.initializeFoodItems();
 
 		// Initialize our three screens
 		this.constructScreen01(); // The splash screen
 		this.constructScreen02(); // The ordering screen
+		this.constructSpecialInstructions();
 		this.constructScreen03(); // The review and checkout screen
 		this.constructScreen04(); // Thank you for Ordering Screen
 
 		getContentPane().setLayout(new CardLayout(0, 0));
 
 		getContentPane().add(screen01, "name_739714584441390");
-
 		screen01.setVisible(true);
 		getContentPane().add(screen02, "name_739714638275609");
 		screen02.setVisible(false);
+
+		specialInstructions.setVisible(false);
+
+		getContentPane().add(specialInstructions, "name_437377097576802");
+
 		getContentPane().add(screen03, "name_739714706543784");
 		screen03.setVisible(false);
 
@@ -84,28 +100,28 @@ public class Screen02Applet extends JApplet {
 	private void initializeFoodItems() {
 		// Initialize Entree Menu
 		entreeMenu = new Food[4];
-		entreeMenu[0] = new Food("Entree #1", 1.99);
-		entreeMenu[1] = new Food("Entree #2", 7.99);
-		entreeMenu[2] = new Food("Entree #3", 12.99);
-		entreeMenu[3] = new Food("Entree #4", 8.99);
+		entreeMenu[0] = new Food("Chips & Dip", 1.99);
+		entreeMenu[1] = new Food("Stuffed Jalapenos", 7.99);
+		entreeMenu[2] = new Food("Mini Flautas", 12.99);
+		entreeMenu[3] = new Food("Salad", 2.99);
 
 		// Initialize Main Menu
 		mainMenu = new Food[7];
-		mainMenu[0] = new Food("Main Item #1", 14.99);
-		mainMenu[1] = new Food("Main Item #2", 12.90);
-		mainMenu[2] = new Food("Main Item #3", 17.90);
-		mainMenu[3] = new Food("Main Item #4", 12.92);
-		mainMenu[4] = new Food("Main Item #5", 14.96);
-		mainMenu[5] = new Food("Main Item #6", 14.97);
-		mainMenu[6] = new Food("Main Item #7", 13.98);
+		mainMenu[0] = new Food("Bisteca con Juevos", 14.99);
+		mainMenu[1] = new Food("Barbacoa", 12.90);
+		mainMenu[2] = new Food("Carne Asada Tacos", 17.90);
+		mainMenu[3] = new Food("Pollo de Marinada", 12.92);
+		mainMenu[4] = new Food("Enchlidas", 14.96);
+		mainMenu[5] = new Food("Pollo con Elote", 14.97);
+		mainMenu[6] = new Food("Flautas", 13.98);
 
 		// Initialize Dessert Menu
 		dessertMenu = new Food[7];
-		dessertMenu[0] = new Food("Dessert #1", 14.99);
-		dessertMenu[1] = new Food("Dessert #2", 12.90);
-		dessertMenu[2] = new Food("Dessert #3", 17.90);
-		dessertMenu[3] = new Food("Dessert #4", 12.92);
-		dessertMenu[4] = new Food("Dessert #5", 14.96);
+		dessertMenu[0] = new Food("Tres Leches Cake", 14.99);
+		dessertMenu[1] = new Food("Nieve", 12.90);
+		dessertMenu[2] = new Food("Sopa's", 17.90);
+		dessertMenu[3] = new Food("Ice Cream Sundae", 12.92);
+		dessertMenu[4] = new Food("Chocolate Cake", 7.96);
 
 		// Initialize Drinks Menu
 		drinksMenu = new Food[4];
@@ -131,7 +147,12 @@ public class Screen02Applet extends JApplet {
 
 		screen01.setLayout(new BorderLayout(0, 0));
 
-		lblNewLabel = new JLabel("Daniel and Trevors Mexican Restaurant");
+		lblNewLabel = new JLabel(
+				"Daniel Ashcraft and Trevor Fishers Mexican Restaurant");
+		lblNewLabel.setForeground(new Color(255, 0, 0));
+		lblNewLabel.setAlignmentY(Component.TOP_ALIGNMENT);
+		lblNewLabel.setFont(new Font("Script MT Bold", Font.PLAIN, 18));
+		lblNewLabel.setPreferredSize(new Dimension(265, 200));
 		screen01.add(lblNewLabel, BorderLayout.NORTH);
 		lblNewLabel.setHorizontalAlignment(SwingConstants.CENTER);
 
@@ -196,7 +217,7 @@ public class Screen02Applet extends JApplet {
 		checkoutButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				screen02.setVisible(false);
-				screen03.setVisible(true);
+				specialInstructions.setVisible(true);
 			}
 		});
 		// Add ActionListener to Switch Scenes
@@ -218,8 +239,123 @@ public class Screen02Applet extends JApplet {
 		screen02.add(removeFromOrderButton);
 	}
 
+	private void constructSpecialInstructions() {
+
+		specialInstructions = new JPanel();
+
+		panel_1 = new JPanel();
+		panel_1.setPreferredSize(new Dimension(450, 85));
+		panel_1.setBorder(new CompoundBorder(
+				new BevelBorder(BevelBorder.RAISED, null, null, null, null),
+				new TitledBorder(UIManager.getBorder("TitledBorder.border"), "",
+						TitledBorder.LEADING, TitledBorder.TOP, null,
+						new Color(0, 0, 0))));
+		specialInstructions.add(panel_1);
+
+		label_2 = new Label("Special Instructions Menu");
+		label_2.setPreferredSize(new Dimension(300, 60));
+		label_2.setAlignment(Label.CENTER);
+		label_2.setFont(new Font("Verdana", Font.ITALIC, 18));
+		panel_1.add(label_2);
+
+		// delivery checkbox
+		checkBox = new JCheckBox("Delivery?");
+
+		specialInstructions.add(checkBox);
+		JRadioButton storeOneButton = new JRadioButton(
+				"North Broadway Store Location");
+		specialInstructions.add(storeOneButton);
+		JRadioButton storeTwoButton = new JRadioButton(
+				"East Main Store Location");
+		specialInstructions.add(storeTwoButton);
+
+		panel_2 = new JPanel();
+		panel_2.setPreferredSize(new Dimension(400, 100));
+		specialInstructions.add(panel_2);
+		panel_2.setBorder(new TitledBorder(null, "JPanel title",
+				TitledBorder.LEADING, TitledBorder.TOP, null, null));
+
+		// Text field for special notes to the restaurant
+		JTextArea specialNotesField = new JTextArea(
+				"Enter special instructions here.");
+		specialNotesField.setPreferredSize(new Dimension(260, 44));
+		panel_2.add(specialNotesField);
+
+		btnNewButton = new JButton("Back to Order");
+		btnNewButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+
+				screen02.setVisible(true);
+				specialInstructions.setVisible(false);
+			}
+		});
+		btnNewButton.setFont(new Font("Simplified Arabic", Font.PLAIN, 13));
+		specialInstructions.add(btnNewButton);
+
+		btnNewButton_1 = new JButton("Continue to Checkout");
+		btnNewButton_1.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				screen03.setVisible(true);
+				specialInstructions.setVisible(false);
+			}
+		});
+		btnNewButton_1.setFont(new Font("Simplified Arabic", Font.PLAIN, 13));
+		specialInstructions.add(btnNewButton_1);
+	}
+
 	private void constructScreen03() {
 		screen03 = new JPanel();
+
+		// Button group to choose store locations
+		ButtonGroup storeLocationGroup = new ButtonGroup();
+		JList jList = new JList(orderListModel);
+		JList orderListFinal = jList;
+
+		orderScrollPane2 = new JScrollPane(orderListFinal);
+		orderScrollPane2.setPreferredSize(new Dimension(400, 130));
+		screen03.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
+
+		label = new Label("Your Order Total is as Follows: ");
+
+		tax = new Label(String.format("Tax Rate: %.02f", Food.getTax()));
+		tax.setPreferredSize(new Dimension(85, 25));
+
+		JPanel finalOrderTotalContainer = new JPanel(
+				new FlowLayout(FlowLayout.CENTER, 10, 5));
+		finalOrderTotalContainer.setPreferredSize(new Dimension(175, 25));
+
+		JPanel finalSubTotalContainer = new JPanel(
+				new FlowLayout(FlowLayout.CENTER, 10, 5));
+
+		finalOrderTotalLabel = new JLabel("Final Total:  $0.00");
+		finalOrderTotalContainer.add(finalOrderTotalLabel);
+
+		finalSubTotalLabel = new JLabel("Subtotal:  $0.00");
+		finalSubTotalContainer.add(finalSubTotalLabel);
+
+		label_1 = new Label("Order Checkout Screen");
+		label_1.setPreferredSize(new Dimension(400, 70));
+		label_1.setFont(new Font("Verdana", Font.ITALIC, 23));
+		label_1.setAlignment(Label.CENTER);
+		screen03.add(label_1);
+
+		screen03.add(label);
+
+		screen03.add(orderScrollPane2);
+
+		screen03.add(finalSubTotalContainer);
+
+		screen03.add(tax);
+		screen03.add(finalOrderTotalContainer);
+
+		button = new Button("Purchase");
+		button.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+
+				screen03.setVisible(false);
+				screen04.setVisible(true);
+			}
+		});
 
 		button_1 = new Button("Go Back to Order Menu");
 		button_1.addActionListener(new ActionListener() {
@@ -231,49 +367,8 @@ public class Screen02Applet extends JApplet {
 			}
 		});
 
-		JList jList = new JList(orderListModel);
-		JList orderListFinal = jList;
-
-		orderScrollPane2 = new JScrollPane(orderListFinal);
-		screen03.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
-
-		label = new Label("Your Order Total is as Follows: ");
-
-		tax = new Label(String.format("Tax Rate: %.02f", Food.getTax()));
-
-		JPanel finalOrderTotalContainer = new JPanel(
-				new FlowLayout(FlowLayout.CENTER, 10, 5));
-
-		JPanel finalSubTotalContainer = new JPanel(
-				new FlowLayout(FlowLayout.CENTER, 10, 5));
-
-		finalOrderTotalLabel = new JLabel("Final Total:  $0.00");
-		finalOrderTotalContainer.add(finalOrderTotalLabel);
-
-		finalSubTotalLabel = new JLabel("Subtotal:  $0.00");
-		finalSubTotalContainer.add(finalSubTotalLabel);
-
-		screen03.add(label);
-
-		screen03.add(orderScrollPane2);
-
-		screen03.add(finalSubTotalContainer);
-
-		screen03.add(tax);
-
-		screen03.add(finalOrderTotalContainer);
-
-		button = new Button("Purchase");
-		button.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-
-				screen03.setVisible(false);
-				screen04.setVisible(true);
-			}
-		});
-		screen03.add(button);
-
 		screen03.add(button_1);
+		screen03.add(button);
 
 	}
 
@@ -282,6 +377,7 @@ public class Screen02Applet extends JApplet {
 		screen04 = new JPanel();
 
 		lblThankYouFor = new JLabel("Thank You for Your order!!!");
+		lblThankYouFor.setPreferredSize(new Dimension(300, 150));
 		lblThankYouFor.setFont(new Font("Traditional Arabic", Font.PLAIN, 35));
 		lblThankYouFor.setBounds(24, 99, 416, 60);
 		screen04.add(lblThankYouFor);
@@ -302,6 +398,10 @@ public class Screen02Applet extends JApplet {
 	// Screen 02 Events
 	private void addToOrder(int index, JLabel subtotalLabel) {
 		if (index >= 0 && index < currentMenu.length) {
+			if (checkBox.isSelected() == true) {
+				subTotal += 4.50;
+			}
+
 			subTotal += ((Food) foodMenuListModel.getElementAt(index))
 					.getPrice();
 
